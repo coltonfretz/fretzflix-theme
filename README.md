@@ -2,6 +2,8 @@
 
 A black and purple theme for Jellyfin 12. It gives you a near-black background with a purple glow rising from the bottom, a glass top bar and menus with a purple rim, rounded cards with a purple edge that lights up on hover, and item pages that show the show's art under a dark purple veil.
 
+![Fretzflix Night on a Jellyfin home screen](screenshots/home.webp)
+
 It's one CSS file with no fonts or anything else loaded from outside your server, so your users' browsers don't contact any third party.
 
 > Built with Claude for my own server and shared as is. It works on my setup (Jellyfin 12.4, web client, Jellyfin Media Player, and the phone apps). Issues and pull requests are welcome, and I'll update it as needed.
