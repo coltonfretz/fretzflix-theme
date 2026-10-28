@@ -1,0 +1,435 @@
+/*
+ * Fretzflix Night: black + purple, dark and moody, glass panels with a purple edge glow.
+ *
+ * WHY it's built this way:
+ * - Jellyfin 12 has two styling systems on one page. The new MUI parts (top bar, menus,
+ *   drawers) read the --jf-palette-* CSS variables, so overriding those recolors them all
+ *   at once. The older parts (cards, indicators, sliders, the player) hard-code the stock
+ *   blue #00a4dc, so those selectors are overridden one by one further down. The list
+ *   came from scanning every loaded stylesheet for #00a4dc on 12.2; re-scan after big
+ *   Jellyfin updates.
+ * - "Glass" = translucent dark fill + backdrop blur + a 1px gradient edge that is bright
+ *   purple at the top-left and fades out, plus a soft purple outer glow. Like HA's liquid
+ *   glass, but the rim light is purple instead of white.
+ * - Everything is in this one file, loaded from the server itself (no CDN, no Google
+ *   Fonts), so friends' browsers never fetch anything from a third party.
+ */
+
+:root,
+[data-theme="dark"] {
+  /* our tokens. The -rgb ones are for see-through shades: rgb(var(--fz-violet-rgb) / 0.2). */
+  --fz-black: #05040b;
+  --fz-ink: #0b0917;
+  --fz-violet: #7b5cff;
+  --fz-violet-hi: #9d85ff;
+  --fz-violet-deep: #4b2fd6;
+  --fz-violet-rgb: 123 92 255;
+  --fz-violet-hi-rgb: 157 133 255;
+  /* the purple glow rising from the bottom of every page */
+  --fz-page-glow:
+    radial-gradient(1500px 560px at 50% 102%, rgb(112 76 236 / 0.42), rgb(86 50 210 / 0.18) 42%, transparent 72%),
+    radial-gradient(900px 460px at 6% -12%, rgb(84 48 220 / 0.26), transparent 62%),
+    radial-gradient(700px 380px at 100% 35%, rgb(60 30 160 / 0.16), transparent 60%);
+  --fz-glass: rgb(18 14 38 / 0.55);
+  --fz-glass-strong: rgb(14 11 30 / 0.82);
+  --fz-edge: linear-gradient(135deg, rgb(var(--fz-violet-hi-rgb) / 0.75), rgb(var(--fz-violet-rgb) / 0.12) 40%, rgb(var(--fz-violet-rgb) / 0) 60%, rgb(var(--fz-violet-rgb) / 0.35));
+  --fz-glow: 0 0 0 1px rgb(var(--fz-violet-rgb) / 0.18), 0 10px 40px -12px rgb(110 70 255 / 0.55);
+  --fz-radius: 14px;
+
+  /* Jellyfin's MUI palette */
+  --jf-palette-primary-main: #7b5cff;
+  --jf-palette-primary-light: #9d85ff;
+  --jf-palette-primary-dark: #4b2fd6;
+  --jf-palette-primary-contrastText: #fff;
+  --jf-palette-primary-mainChannel: 123 92 255;
+  --jf-palette-primary-lightChannel: 157 133 255;
+  --jf-palette-primary-darkChannel: 75 47 214;
+  --jf-palette-primary-contrastTextChannel: 255 255 255;
+  --jf-palette-secondary-main: #9d85ff;
+  --jf-palette-secondary-mainChannel: 157 133 255;
+  --jf-palette-background-default: #05040b;
+  --jf-palette-background-paper: #0f0c20;
+  --jf-palette-background-defaultChannel: 5 4 11;
+  --jf-palette-background-paperChannel: 15 12 32;
+  --jf-palette-AppBar-defaultBg: rgb(10 8 22 / 0.6);
+  --jf-palette-AppBar-darkBg: rgb(10 8 22 / 0.6);
+  --jf-palette-action-hover: rgb(var(--fz-violet-rgb) / 0.12);
+  --jf-palette-action-selected: rgb(var(--fz-violet-rgb) / 0.22);
+  --jf-palette-action-focus: rgb(var(--fz-violet-rgb) / 0.2);
+  --jf-palette-divider: rgb(var(--fz-violet-hi-rgb) / 0.14);
+  --jf-palette-text-secondary: rgb(226 220 255 / 0.68);
+}
+
+/* ---------- page background: near-black with a purple glow rising from the bottom ---------- */
+/* During video playback Jellyfin marks the page transparent (html.transparentDocument,
+   .backgroundContainer-transparent). Leave those alone: in the desktop and phone apps the
+   video is drawn UNDER the web page, so painting them would hide the picture, and in a
+   browser it tinted the video purple. */
+html:not(.transparentDocument),
+.backgroundContainer:not(.backgroundContainer-transparent) {
+  background-color: var(--fz-black) !important;
+}
+/* body must stay transparent: item backdrop art sits at z-index -1 under it */
+body {
+  background-color: transparent !important;
+}
+.backgroundContainer:not(.withBackdrop):not(.backgroundContainer-transparent) {
+  background-image: var(--fz-page-glow) !important;
+}
+/* item pages: keep the backdrop art, veil it purple-black instead of grey */
+.backgroundContainer.withBackdrop:not(.backgroundContainer-transparent) {
+  background-color: transparent !important;
+  background-image:
+    radial-gradient(1400px 520px at 50% 105%, rgb(108 72 230 / 0.28), transparent 70%),
+    linear-gradient(180deg, rgb(5 4 11 / 0.45) 0%, rgb(7 5 18 / 0.86) 42%, rgb(5 4 11 / 0.96) 72%) !important;
+}
+/* Radio / Surf TV (Tuner plugin) opened from an item page: Tuner hides the backdrop art, but
+   Jellyfin leaves .withBackdrop on, so put the normal glow back instead of the item veil. */
+body.tnr-page-active .backgroundContainer.withBackdrop:not(.backgroundContainer-transparent) {
+  background-image: var(--fz-page-glow) !important;
+  opacity: 1 !important;
+}
+/* the title band on item pages. No borders or backdrop-filter here: either one shifts
+   the floated info block off the poster. Hairlines are inset shadows instead. */
+.detailRibbon {
+  background: linear-gradient(180deg, rgb(14 10 34 / 0.72), rgb(8 6 20 / 0.62)) !important;
+  box-shadow: inset 0 1px 0 rgb(var(--fz-violet-hi-rgb) / 0.28), inset 0 -1px 0 rgb(var(--fz-violet-hi-rgb) / 0.12), 0 -10px 40px -20px rgb(110 70 255 / 0.6);
+}
+.itemName,
+.parentName {
+  color: #fff !important;
+}
+.detailImageContainer .cardScalable {
+  box-shadow: 0 0 0 1px rgb(var(--fz-violet-hi-rgb) / 0.35), 0 20px 50px -18px rgb(110 70 255 / 0.75);
+}
+
+/* ---------- top bar: glass strip with a purple hairline ---------- */
+.MuiAppBar-root,
+.skinHeader.skinHeader-withBackground {
+  background: rgb(8 6 20 / 0.55) !important;
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: none !important;
+}
+.MuiAppBar-root::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(var(--fz-violet-hi-rgb) / 0.55) 30%, rgb(var(--fz-violet-rgb) / 0.55) 70%, transparent);
+  pointer-events: none;
+}
+.MuiAppBar-root .MuiButton-root {
+  border-radius: 999px;
+}
+.MuiAppBar-root .MuiButton-root:hover {
+  background: rgb(var(--fz-violet-rgb) / 0.16);
+}
+
+/* ---------- cards: rounded, purple rim on hover ---------- */
+.cardScalable,
+.cardImageContainer,
+.cardContent,
+.cardOverlayContainer {
+  border-radius: var(--fz-radius) !important;
+}
+.cardScalable {
+  /* resting rim: barely-there purple edge, like the glass cards in the reference */
+  box-shadow: 0 0 0 1px rgb(var(--fz-violet-hi-rgb) / 0.16), 0 8px 24px -14px rgb(90 60 255 / 0.45);
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+.card:hover .cardScalable,
+.card:focus-within .cardScalable,
+.card.show-focus:focus .cardScalable {
+  box-shadow: 0 0 0 1.5px rgb(150 126 245 / 0.55), 0 12px 34px -10px rgb(100 64 235 / 0.45);
+}
+.cardOverlayContainer {
+  background: linear-gradient(180deg, rgb(10 6 30 / 0.15), rgb(20 10 60 / 0.65)) !important;
+}
+.cardOverlayButton-hover:hover {
+  color: var(--fz-violet-hi) !important;
+}
+.cardText-first {
+  font-weight: 600;
+}
+.countIndicator,
+.playedIndicator,
+.cardIndicators .indicator {
+  background: linear-gradient(135deg, var(--fz-violet-hi), var(--fz-violet-deep)) !important;
+  box-shadow: 0 2px 10px rgb(110 70 255 / 0.55);
+}
+.itemProgressBar {
+  background: rgb(255 255 255 / 0.12) !important;
+}
+.itemProgressBarForeground {
+  background: linear-gradient(90deg, var(--fz-violet-deep), var(--fz-violet-hi)) !important;
+  box-shadow: 0 0 8px rgb(140 110 255 / 0.8);
+}
+
+/* Jellyfin Enhanced's quality tags on posters (1080p, H264, ...). JE colors each value with
+   `.quality-overlay-container .quality-overlay-label[data-quality="..."]` + !important, so
+   these repeat the class to outrank it. The tiers keep their meaning in purple shades:
+   brightest for 4K/8K, mid for 1440p/1080p, muted for 720p and below, dark glass with a
+   purple rim for everything else (codec, HDR, ...). */
+.quality-overlay-container .quality-overlay-label.quality-overlay-label.quality-overlay-label {
+  border-radius: 999px !important;
+  color: #fff !important;
+  background: rgb(14 10 32 / 0.72) !important;
+  box-shadow: inset 0 0 0 1px rgb(var(--fz-violet-hi-rgb) / 0.5) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.quality-overlay-container .quality-overlay-label.quality-overlay-label:is([data-quality="8K"], [data-quality="4K"]) {
+  background: rgb(157 120 255 / 0.92) !important;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.25), 0 0 12px -2px rgb(140 100 255 / 0.7) !important;
+}
+.quality-overlay-container .quality-overlay-label.quality-overlay-label:is([data-quality="1440p"], [data-quality="1080p"]) {
+  background: rgb(var(--fz-violet-rgb) / 0.82) !important;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.18) !important;
+}
+.quality-overlay-container .quality-overlay-label.quality-overlay-label:is([data-quality="720p"], [data-quality="576p"], [data-quality="480p"], [data-quality="SD"], [data-quality="LOW-RES"]) {
+  background: rgb(84 70 140 / 0.82) !important;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.14) !important;
+}
+
+/* ---------- section titles ---------- */
+.sectionTitle,
+.sectionTitle-cards {
+  letter-spacing: 0.01em;
+}
+.sectionTitleTextButton:hover .sectionTitle,
+.sectionTitleTextButton:hover .material-icons {
+  color: var(--fz-violet-hi);
+}
+
+/* ---------- glass panels: dialogs, menus, action sheets, drawers ---------- */
+.dialog,
+.actionSheet,
+.MuiMenu-paper,
+.MuiPopover-paper,
+.MuiDrawer-paper,
+.tnr-more-menu,
+.formDialogContent {
+  background: var(--fz-glass-strong) !important;
+  backdrop-filter: blur(22px) saturate(150%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+}
+.dialog,
+.actionSheet,
+.MuiMenu-paper,
+.MuiPopover-paper,
+.tnr-more-menu {
+  border-radius: 16px !important;
+  box-shadow: var(--fz-glow), 0 24px 60px -20px #000 !important;
+  /* no position override: MUI menus are absolutely placed, and relative breaks that */
+}
+/* the purple rim: a 1px gradient ring cut out with a mask */
+.dialog::before,
+.actionSheet::before,
+.MuiMenu-paper::before,
+.MuiPopover-paper::before,
+.tnr-more-menu::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: var(--fz-edge);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+}
+.MuiDrawer-paper {
+  border-right: 1px solid rgb(var(--fz-violet-hi-rgb) / 0.18) !important;
+}
+.MuiListItemButton-root.Mui-selected,
+.listItem.selected {
+  background: rgb(var(--fz-violet-rgb) / 0.22) !important;
+}
+
+/* ---------- buttons ---------- */
+.button-submit,
+.raised.button-submit,
+.btnPlay.detailButton .detailButton-content,
+.emby-button.raised:not(.button-cancel):hover {
+  border-radius: 999px;
+}
+.button-submit,
+.raised.button-submit {
+  background: linear-gradient(135deg, var(--fz-violet-hi), var(--fz-violet-deep)) !important;
+  color: #fff !important;
+  box-shadow: 0 6px 22px -6px rgb(110 70 255 / 0.8), inset 0 1px 0 rgb(255 255 255 / 0.25);
+}
+.raised:not(.button-submit) {
+  background: rgb(255 255 255 / 0.06) !important;
+  border: 1px solid rgb(var(--fz-violet-hi-rgb) / 0.22);
+  border-radius: 999px;
+}
+.button-flat:hover,
+.button-link,
+.button-accent-flat,
+.paper-icon-button-light:hover:not(:disabled),
+.paper-icon-button-light:active:not(:disabled),
+.paper-icon-button-light.show-focus:focus,
+.buttonActive,
+.emby-tab-button:hover,
+.emby-tab-button.show-focus:focus,
+.metadataSidebarIcon,
+.upNextDialog-countdownText {
+  color: var(--fz-violet-hi) !important;
+}
+.emby-tab-button-active {
+  color: #fff !important;
+  text-shadow: 0 0 14px rgb(140 110 255 / 0.9);
+}
+.detailButton:hover .detailButton-content,
+.detailButton:focus .detailButton-content {
+  background: rgb(var(--fz-violet-rgb) / 0.25) !important;
+}
+
+/* Play All / Shuffle (MUI contained buttons): same soft purple pill as the "1-100 of N"
+   chip next to them, instead of a solid block. The chip itself already reads
+   --jf-palette-action-selected, which is set above. */
+.MuiButtonGroup-contained {
+  box-shadow: none !important;
+}
+.MuiButton-contained.MuiButton-containedPrimary {
+  background-color: rgb(var(--fz-violet-rgb) / 0.22) !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+.MuiButton-contained.MuiButton-containedPrimary:hover {
+  background-color: rgb(var(--fz-violet-rgb) / 0.34) !important;
+}
+.MuiButtonGroup-contained .MuiButtonGroup-firstButton {
+  border-radius: 999px 0 0 999px !important;
+  border-right-color: rgb(var(--fz-violet-hi-rgb) / 0.25) !important;
+}
+.MuiButtonGroup-contained .MuiButtonGroup-lastButton {
+  border-radius: 0 999px 999px 0 !important;
+}
+.MuiButton-contained:not(.MuiButtonGroup-grouped) {
+  border-radius: 999px !important;
+}
+
+/* ---------- our Tuner plugin pages (Radio, Surf TV) ----------
+   Tuner keeps its colors in --tnr-* variables, so retint those to glass-on-black and give
+   its pill buttons the same translucent purple. The red dial needle and the genre colors
+   stay: they carry meaning. */
+/* "body" for specificity: Tuner's own stylesheet can load after this one */
+body .tnr-page {
+  --tnr-bg: rgb(8 6 20 / 0.55);
+  --tnr-panel: rgb(20 15 42 / 0.55);
+  --tnr-raise: rgb(var(--fz-violet-rgb) / 0.16);
+  --tnr-line: rgb(var(--fz-violet-hi-rgb) / 0.22);
+  --tnr-text: #ece8ff;
+  --tnr-dim: rgb(226 220 255 / 0.72);
+  --tnr-faint: rgb(226 220 255 / 0.45);
+}
+.tnr-card,
+.tnr-scale {
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: inset 0 0 0 1px rgb(var(--fz-violet-hi-rgb) / 0.14);
+}
+.tnr-btn {
+  border-radius: 999px !important;
+}
+.tnr-btn:hover {
+  background: rgb(var(--fz-violet-rgb) / 0.28) !important;
+}
+.tnr-mode {
+  background: rgb(var(--fz-violet-rgb) / 0.08) !important;
+  border-color: rgb(var(--fz-violet-hi-rgb) / 0.25) !important;
+  color: var(--tnr-dim) !important;
+}
+.tnr-mode:hover {
+  background: rgb(var(--fz-violet-rgb) / 0.18) !important;
+}
+.tnr-mode.on {
+  background: rgb(var(--fz-violet-rgb) / 0.32) !important;
+  border-color: rgb(var(--fz-violet-hi-rgb) / 0.55) !important;
+  color: #fff !important;
+  box-shadow: 0 0 18px -6px rgb(var(--fz-violet-rgb) / 0.55), inset 0 1px 0 rgb(255 255 255 / 0.12);
+}
+
+/* ---------- inputs ---------- */
+.emby-input,
+.emby-textarea,
+.emby-select-withcolor {
+  background: rgb(255 255 255 / 0.05) !important;
+  border: 1px solid rgb(var(--fz-violet-hi-rgb) / 0.2) !important;
+  border-radius: 10px !important;
+}
+.emby-input:focus,
+.emby-textarea:focus,
+.emby-select-withcolor:focus {
+  border-color: var(--fz-violet) !important;
+  box-shadow: 0 0 0 3px rgb(var(--fz-violet-rgb) / 0.25);
+}
+.inputLabelFocused,
+.selectLabelFocused,
+.textareaLabelFocused {
+  color: var(--fz-violet-hi) !important;
+}
+.emby-checkbox:checked + span + .checkboxOutline {
+  background-color: var(--fz-violet) !important;
+  border-color: var(--fz-violet) !important;
+}
+
+/* ---------- the rest of the stock-blue spots (from the #00a4dc scan) ---------- */
+.listItemImageButton:hover,
+.listItemIcon:not(.listItemIcon-transparent),
+.playbackProgress > div,
+.mdl-slider-background-lower,
+.sliderMarker.watched,
+.iconOsdProgressInner,
+.alphaPickerButton-tv:focus,
+.emby-select-tv-withcolor:focus,
+.guide-channelHeaderCell:focus,
+.programCell:focus,
+.guide-date-tab-button.show-focus:focus,
+div[data-role="controlgroup"] a.ui-btn-active {
+  background-color: var(--fz-violet) !important;
+}
+progress::-webkit-progress-value,
+progress[aria-valuenow]::before,
+.mdl-slider::-webkit-slider-thumb {
+  background-color: var(--fz-violet) !important;
+}
+.mdl-slider {
+  color: var(--fz-violet) !important;
+}
+.mdl-spinner__layer-1,
+.mdl-spinner__layer-2,
+.mdl-spinner__layer-3,
+.mdl-spinner__layer-4 {
+  border-color: var(--fz-violet) !important;
+}
+.guide-date-tab-button.emby-tab-button-active,
+.guide-date-tab-button:focus {
+  color: var(--fz-violet-hi) !important;
+}
+
+/* our own Tuner plugin: the active Radio / Surf TV link. Tuner colors it with Jellyfin's
+   primary color (already purple here); this lifts it to the lighter purple the other
+   highlighted controls use. */
+body[data-tnr-page="radio"] .tnr-topnav[data-kind="radio"],
+body[data-tnr-page="radio"] .tnr-topicon[data-kind="radio"],
+body[data-tnr-page="tv"] .tnr-topnav[data-kind="tv"],
+body[data-tnr-page="tv"] .tnr-topicon[data-kind="tv"] {
+  color: var(--fz-violet-hi) !important;
+}
+
+/* ---------- scrollbars ---------- */
+* {
+  scrollbar-color: rgb(var(--fz-violet-rgb) / 0.45) transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--fz-violet-rgb) / 0.45);
+  border-radius: 999px;
+}
