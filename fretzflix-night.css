@@ -246,6 +246,19 @@ body.tnr-page-active .backgroundContainer.withBackdrop:not(.backgroundContainer-
 .MuiDrawer-paper {
   border-right: 1px solid rgb(var(--fz-violet-hi-rgb) / 0.18) !important;
 }
+/* SyncPlay settings: Jellyfin pins the Save bar (an opaque grey strip) over the
+   bottom of the scrolling list, so it hides whichever settings are under it. Put
+   it in the flow instead, right after the last setting. #footer is only used by
+   this dialog, so other dialogs keep their pinned Save. The list has 20em of
+   empty space at the end to scroll past the pinned bar; the negative margin
+   takes most of that back so Save isn't followed by a blank screen. */
+.formDialogFooter#footer {
+  position: static;
+  background: transparent !important;
+  border-top: 0 !important;
+  padding: 1.5em 0 0;
+  margin-bottom: -18.5em;
+}
 .MuiListItemButton-root.Mui-selected,
 .listItem.selected {
   background: rgb(var(--fz-violet-rgb) / 0.22) !important;
