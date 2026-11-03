@@ -172,14 +172,15 @@ body.tnr-page-active .backgroundContainer.withBackdrop:not(.backgroundContainer-
    `.quality-overlay-container .quality-overlay-label[data-quality="..."]` + !important, so
    these repeat the class to outrank it. The tiers keep their meaning in purple shades:
    brightest for 4K/8K, mid for 1440p/1080p, muted for 720p and below, dark glass with a
-   purple rim for everything else (codec, HDR, ...). */
+   purple rim for everything else (codec, HDR, ...).
+   No backdrop-filter on these: there are 2-3 per poster (~240 on the home page), and a
+   live blur behind each one cost ~30% of the frame rate while scrolling (measured
+   2026-11-03, 30 -> 39 fps). A more solid background keeps the text readable instead. */
 .quality-overlay-container .quality-overlay-label.quality-overlay-label.quality-overlay-label {
   border-radius: 999px !important;
   color: #fff !important;
-  background: rgb(14 10 32 / 0.72) !important;
+  background: rgb(14 10 32 / 0.85) !important;
   box-shadow: inset 0 0 0 1px rgb(var(--fz-violet-hi-rgb) / 0.5) !important;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
 }
 .quality-overlay-container .quality-overlay-label.quality-overlay-label:is([data-quality="8K"], [data-quality="4K"]) {
   background: rgb(157 120 255 / 0.92) !important;
