@@ -154,6 +154,33 @@ body.tnr-page-active .backgroundContainer.withBackdrop:not(.backgroundContainer-
 .cardText-first {
   font-weight: 600;
 }
+/* Play on a poster: a small round button in the bottom-left corner, not a big one in the
+   middle (2026-11-05). WHY: stock Jellyfin centres a ~58 px Play button on hover, so a
+   click aimed at the poster started the movie instead of opening it (Fretzflix review:
+   "easy to trigger by accident"). The rest of the hovered poster already opens the
+   details page; the corner button matches the ones bottom-right (played, favourite,
+   more) and is purple so it still reads as THE play button. */
+.cardOverlayFab-primary {
+  top: auto !important;
+  left: 0.4em !important;
+  bottom: 0.4em !important;
+  margin: 0 !important;
+  width: 2.4em !important;
+  height: 2.4em !important;
+  font-size: 100% !important;
+  background: linear-gradient(135deg, var(--fz-violet-hi), var(--fz-violet-deep)) !important;
+  box-shadow: 0 3px 10px -3px rgb(0 0 0 / 0.7);
+}
+.cardOverlayFab-primary .cardOverlayButtonIcon {
+  font-size: 1.5em !important;
+}
+/* Cards with no picture (classic TV episodes, some channels): stock fills them with
+   five shades of Jellyfin blue. Purple shades instead, dark enough for the white icon. */
+.defaultCardBackground1 { background-color: #2a1f52 !important; }
+.defaultCardBackground2 { background-color: #3a2a72 !important; }
+.defaultCardBackground3 { background-color: #4b33a0 !important; }
+.defaultCardBackground4 { background-color: #33255f !important; }
+.defaultCardBackground5 { background-color: #22193f !important; }
 .countIndicator,
 .playedIndicator,
 .cardIndicators .indicator {
@@ -437,6 +464,35 @@ body[data-tnr-page="radio"] .tnr-topicon[data-kind="radio"],
 body[data-tnr-page="tv"] .tnr-topnav[data-kind="tv"],
 body[data-tnr-page="tv"] .tnr-topicon[data-kind="tv"] {
   color: var(--fz-violet-hi) !important;
+}
+
+/* ---------- details page tags: two lines, the rest on hover (2026-11-05) ----------
+   TMDB gives some films 40+ keywords (Nosferatu: 41), a block four lines tall under the
+   overview (Fretzflix review). Mouse users get two lines that fade out and open fully on
+   hover or keyboard focus. Touch screens can't hover, so they keep the full list
+   (hover: hover is false there). */
+@media (hover: hover) {
+  .itemTags {
+    max-height: 3.4em;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(180deg, #000 45%, transparent);
+    mask-image: linear-gradient(180deg, #000 45%, transparent);
+  }
+  .itemTags:hover,
+  .itemTags:focus-within {
+    max-height: none;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+
+/* ---------- guide: dark channel logos on the dark grid (2026-11-05) ----------
+   Black or navy logos (TheGrio, Bloomberg, ...) vanished on the near-black guide. A solid
+   light plate would hide the white logos (ABC, CBS) instead, so every logo gets a faint
+   light outline: dark logos gain an edge, white ones barely change. drop-shadow follows
+   the logo's own shape. ~120 small logos; measured on scroll before keeping it. */
+.guideChannelImage {
+  filter: drop-shadow(0 0 1px rgb(255 255 255 / 0.6)) drop-shadow(0 0 3px rgb(255 255 255 / 0.22));
 }
 
 /* ---------- scrollbars ---------- */
