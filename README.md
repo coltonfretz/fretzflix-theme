@@ -10,7 +10,7 @@ It's one CSS file with no fonts or anything else loaded from outside your server
 
 ## Install
 
-1. In Jellyfin, go to **Dashboard > General > Branding > Custom CSS**.
+1. In Jellyfin, go to **Dashboard -> General -> Branding -> Custom CSS**.
 2. Paste the whole of [`fretzflix-night.css`](fretzflix-night.css) and click **Save**.
 3. Reload the page.
 
