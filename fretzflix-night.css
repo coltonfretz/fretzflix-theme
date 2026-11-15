@@ -110,6 +110,18 @@ body.tnr-page-active .backgroundContainer.withBackdrop:not(.backgroundContainer-
   backdrop-filter: blur(18px) saturate(140%);
   -webkit-backdrop-filter: blur(18px) saturate(140%);
   box-shadow: none !important;
+  transition: background-color 0.2s ease;
+}
+/* While Jellyfin-Tuned's smooth scrolling glides the page (html.tnr-gliding), the bar trades
+   its blur for a near-solid fill. WHY (measured 2026-11-15 on the Fretzflix home page): the
+   blur has to be redone every frame as posters move under it; 42 of 230 glide frames were
+   late with it, 7 of 272 without. Poster shadows and offscreen rows barely mattered.
+   No effect without that plugin setting. */
+html.tnr-gliding .MuiAppBar-root,
+html.tnr-gliding .skinHeader.skinHeader-withBackground {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: rgb(8 6 20 / 0.9) !important;
 }
 .MuiAppBar-root::after {
   content: "";
