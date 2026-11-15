@@ -624,6 +624,53 @@ body[data-tnr-page="tv"] .tnr-topicon[data-kind="tv"] {
 .itemDetailPage .detailVerticalSection:not(.hide),
 .itemDetailPage .collectionItems:not(.hide) { animation-delay: 0.08s; }
 
+/* ---------- library grids ripple in (2026-11-15) ----------
+   Movies, Shows, the Classics tabs and other library pages put their whole grid in at once
+   (.itemsContainer.vertical-wrap), which landed as one block. Each poster fades and rises
+   as it's inserted, 15 ms after the one before, so the grid washes in from the top left
+   (about 0.5 s for the first three rows on a wide screen; posters past the 36th share the
+   last delay). Paging, sorting and filters replay it, since they re-insert the grid.
+   Same fz-rise as the item page; off for TV and reduced motion, below. */
+.itemsContainer.vertical-wrap > .card {
+  animation: fz-rise 0.38s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.itemsContainer.vertical-wrap > .card:nth-child(2) { animation-delay: 0.015s; }
+.itemsContainer.vertical-wrap > .card:nth-child(3) { animation-delay: 0.030s; }
+.itemsContainer.vertical-wrap > .card:nth-child(4) { animation-delay: 0.045s; }
+.itemsContainer.vertical-wrap > .card:nth-child(5) { animation-delay: 0.060s; }
+.itemsContainer.vertical-wrap > .card:nth-child(6) { animation-delay: 0.075s; }
+.itemsContainer.vertical-wrap > .card:nth-child(7) { animation-delay: 0.090s; }
+.itemsContainer.vertical-wrap > .card:nth-child(8) { animation-delay: 0.105s; }
+.itemsContainer.vertical-wrap > .card:nth-child(9) { animation-delay: 0.120s; }
+.itemsContainer.vertical-wrap > .card:nth-child(10) { animation-delay: 0.135s; }
+.itemsContainer.vertical-wrap > .card:nth-child(11) { animation-delay: 0.150s; }
+.itemsContainer.vertical-wrap > .card:nth-child(12) { animation-delay: 0.165s; }
+.itemsContainer.vertical-wrap > .card:nth-child(13) { animation-delay: 0.180s; }
+.itemsContainer.vertical-wrap > .card:nth-child(14) { animation-delay: 0.195s; }
+.itemsContainer.vertical-wrap > .card:nth-child(15) { animation-delay: 0.210s; }
+.itemsContainer.vertical-wrap > .card:nth-child(16) { animation-delay: 0.225s; }
+.itemsContainer.vertical-wrap > .card:nth-child(17) { animation-delay: 0.240s; }
+.itemsContainer.vertical-wrap > .card:nth-child(18) { animation-delay: 0.255s; }
+.itemsContainer.vertical-wrap > .card:nth-child(19) { animation-delay: 0.270s; }
+.itemsContainer.vertical-wrap > .card:nth-child(20) { animation-delay: 0.285s; }
+.itemsContainer.vertical-wrap > .card:nth-child(21) { animation-delay: 0.300s; }
+.itemsContainer.vertical-wrap > .card:nth-child(22) { animation-delay: 0.315s; }
+.itemsContainer.vertical-wrap > .card:nth-child(23) { animation-delay: 0.330s; }
+.itemsContainer.vertical-wrap > .card:nth-child(24) { animation-delay: 0.345s; }
+.itemsContainer.vertical-wrap > .card:nth-child(25) { animation-delay: 0.360s; }
+.itemsContainer.vertical-wrap > .card:nth-child(26) { animation-delay: 0.375s; }
+.itemsContainer.vertical-wrap > .card:nth-child(27) { animation-delay: 0.390s; }
+.itemsContainer.vertical-wrap > .card:nth-child(28) { animation-delay: 0.405s; }
+.itemsContainer.vertical-wrap > .card:nth-child(29) { animation-delay: 0.420s; }
+.itemsContainer.vertical-wrap > .card:nth-child(30) { animation-delay: 0.435s; }
+.itemsContainer.vertical-wrap > .card:nth-child(31) { animation-delay: 0.450s; }
+.itemsContainer.vertical-wrap > .card:nth-child(32) { animation-delay: 0.465s; }
+.itemsContainer.vertical-wrap > .card:nth-child(33) { animation-delay: 0.480s; }
+.itemsContainer.vertical-wrap > .card:nth-child(34) { animation-delay: 0.495s; }
+.itemsContainer.vertical-wrap > .card:nth-child(35) { animation-delay: 0.510s; }
+.itemsContainer.vertical-wrap > .card:nth-child(36) { animation-delay: 0.525s; }
+.itemsContainer.vertical-wrap > .card:nth-child(n+37) { animation-delay: 0.54s; }
+
 /* ---------- details page tags: two lines, the rest on hover (2026-11-05) ----------
    TMDB gives some films 40+ keywords (Nosferatu: 41), a block four lines tall under the
    overview (Fretzflix review). Mouse users get two lines that fade out and open fully on
@@ -728,7 +775,8 @@ html.layout-tv {
   .itemDetailPage .itemMiscInfo-primary > *,
   .itemDetailPage .mainDetailButtons > .detailButton,
   .itemDetailPage .detailVerticalSection,
-  .itemDetailPage .collectionItems {
+  .itemDetailPage .collectionItems,
+  .itemsContainer.vertical-wrap > .card {
     animation: none !important;
   }
   .backdropImageFadeIn {
@@ -740,6 +788,7 @@ html.layout-tv {
 .layout-tv .itemDetailPage .itemMiscInfo-primary > *,
 .layout-tv .itemDetailPage .mainDetailButtons > .detailButton,
 .layout-tv .itemDetailPage .detailVerticalSection,
-.layout-tv .itemDetailPage .collectionItems {
+.layout-tv .itemDetailPage .collectionItems,
+.layout-tv .itemsContainer.vertical-wrap > .card {
   animation: none !important;
 }
