@@ -139,6 +139,12 @@ html.tnr-gliding .skinHeader.skinHeader-withBackground {
 .MuiAppBar-root .MuiButton-root:hover {
   background: rgb(var(--fz-violet-rgb) / 0.16);
 }
+/* The highlighted top-bar link (Home, Favorites, ...): MUI paints it in the primary violet
+   #7b5cff, ~4.1:1 on the bar and lower on the hover tint (review 2026-11-15, second
+   round). The light violet is ~6:1 on the hover tint, ~6.8:1 on the bar. */
+.MuiAppBar-root .MuiButton-textPrimary {
+  color: var(--fz-violet-hi);
+}
 
 /* ---------- cards: rounded, purple rim on hover ---------- */
 .cardScalable,
@@ -182,6 +188,11 @@ html.tnr-gliding .skinHeader.skinHeader-withBackground {
    home page (review 2026-11-15). Their image container is .defaultCardBackground, not
    .lazy. Own rule: :has() is unknown to Chromium 83, which drops just this one. */
 .cardPadder:has(~ .defaultCardBackground)::after { display: none; }
+/* Jellyfin 12's React cards (home rows, among others) never set .lazy-hidden-children
+   at all: they load the poster as a plain <img> inside .cardContent and show it by
+   setting an inline opacity: 1 when it arrives. So 179 sheens kept running under loaded
+   posters there (review 2026-11-15, second round). Stop once that image is showing. */
+.cardPadder:has(~ .cardContent img[style*="opacity: 1"])::after { display: none; }
 
 .cardScalable {
   /* resting rim: barely-there purple edge, like the glass cards in the reference */
@@ -323,23 +334,43 @@ html.tnr-gliding .skinHeader.skinHeader-withBackground {
    display with !important on its own containers. Touch screens can't hover, so they
    keep everything (hover: hover is false there). */
 @media (hover: hover) {
+  /* .listItem: a season's episode list draws rows, not cards; the same badges covered
+     half of each episode thumbnail there (review 2026-11-15, second round). */
   .card .quality-overlay-container .quality-overlay-label:not(.resolution),
   .card .genre-overlay-container,
-  .card .language-overlay-container {
+  .card .language-overlay-container,
+  .listItem .quality-overlay-container .quality-overlay-label:not(.resolution),
+  .listItem .genre-overlay-container,
+  .listItem .language-overlay-container {
     transition: opacity 0.18s ease, visibility 0.18s;
   }
   .card:not(:hover):not(:focus-within) .quality-overlay-container .quality-overlay-label:not(.resolution),
   .card:not(:hover):not(:focus-within) .genre-overlay-container,
-  .card:not(:hover):not(:focus-within) .language-overlay-container {
+  .card:not(:hover):not(:focus-within) .language-overlay-container,
+  .listItem:not(:hover):not(:focus-within) .quality-overlay-container .quality-overlay-label:not(.resolution),
+  .listItem:not(:hover):not(:focus-within) .genre-overlay-container,
+  .listItem:not(:hover):not(:focus-within) .language-overlay-container {
     opacity: 0 !important;
     visibility: hidden !important;
   }
+}
+
+/* Home page TV row (Jellyfin's Live TV section: TV buttons + "On Now"). Jellyfin draws it
+   ~327 px tall, then hides the whole section when On Now comes back empty, pulling every
+   row below it up: layout shift 0.10 -> 0.25 (review 2026-11-15, second round). Keep it
+   hidden until On Now has a card; when it has none, nothing changes from before.
+   Sections are direct children of .homeSectionsContainer; the TV buttons link to
+   #/livetv?tab=... */
+.homeSectionsContainer > .verticalSection:has(a[href^="#/livetv"]):not(:has(.itemsContainer .card)) {
+  display: none;
 }
 
 /* ---------- section titles ---------- */
 .sectionTitle,
 .sectionTitle-cards {
   letter-spacing: 0.01em;
+  /* row titles lead, like card titles; they were the same 68% grey as the year lines */
+  color: rgb(255 255 255 / 0.93);
 }
 .sectionTitleTextButton:hover .sectionTitle,
 .sectionTitleTextButton:hover .material-icons {
@@ -654,7 +685,9 @@ progress::-moz-progress-bar {
 body[data-tnr-page="radio"] .tnr-topnav[data-kind="radio"],
 body[data-tnr-page="radio"] .tnr-topicon[data-kind="radio"],
 body[data-tnr-page="tv"] .tnr-topnav[data-kind="tv"],
-body[data-tnr-page="tv"] .tnr-topicon[data-kind="tv"] {
+body[data-tnr-page="tv"] .tnr-topicon[data-kind="tv"],
+body[data-tnr-page="request"] .tnr-topnav[data-kind="request"],
+body[data-tnr-page="request"] .tnr-topicon[data-kind="request"] {
   color: var(--fz-violet-hi) !important;
 }
 
