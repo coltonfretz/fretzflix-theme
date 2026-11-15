@@ -147,6 +147,37 @@ html.tnr-gliding .skinHeader.skinHeader-withBackground {
 .cardOverlayContainer {
   border-radius: var(--fz-radius) !important;
 }
+/* Loading posters: deep violet with a sheen instead of Jellyfin's flat grey (#242424) box.
+   The .cardPadder sits under each poster; Jellyfin adds .lazy-hidden-children to it once the
+   picture has loaded (and removes it when a far-off poster is unloaded), so the sheen runs
+   only while that poster is missing. Transform-only animation (composited, no repaints),
+   clipped by the padder's own `contain: strict`. A blurhash preview covers it when there is
+   one. (2026-11-15) */
+.cardBox:not(.visualCardBox) .cardPadder {
+  background-color: #120d26 !important;
+  border-radius: var(--fz-radius);
+  overflow: hidden;
+}
+.cardPadder:not(.lazy-hidden-children)::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 25%, rgb(var(--fz-violet-hi-rgb) / 0.16) 50%, transparent 75%);
+  transform: translateX(-100%);
+  animation: fz-sheen 1.6s ease-in-out infinite;
+  pointer-events: none;
+}
+.cardPadder .cardImageIcon {
+  color: rgb(var(--fz-violet-hi-rgb) / 0.22) !important;
+}
+@keyframes fz-sheen {
+  to { transform: translateX(100%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cardPadder::after { animation: none; opacity: 0; }
+}
+.layout-tv .cardPadder::after { display: none; }
+
 .cardScalable {
   /* resting rim: barely-there purple edge, like the glass cards in the reference */
   box-shadow: 0 0 0 1px rgb(var(--fz-violet-hi-rgb) / 0.16), 0 8px 24px -14px rgb(90 60 255 / 0.45);
