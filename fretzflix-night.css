@@ -588,6 +588,42 @@ body[data-tnr-page="tv"] .tnr-topicon[data-kind="tv"] {
   color: var(--fz-violet-hi) !important;
 }
 
+/* ---------- item page arrives in sequence, not all at once (2026-11-15) ----------
+   Opening an item (Bleach, review 2026-11-15) popped the backdrop, logo, poster, title,
+   buttons and each row in separately as their data came back, "trying to push out a fart
+   for a second". jellyfin-web inserts or un-hides (.hide is display:none) each part when it
+   renders it, and a CSS animation starts whenever an element is inserted or shown, so each
+   part fades and rises into place as it arrives (the logo already has Jellyfin's own fade
+   once its picture loads). Small stagger (title, info, buttons), all
+   done in under half a second. Opacity/transform only (composited). Off for TV and reduced
+   motion, below. Coming Back to a page replays it: Jellyfin re-shows the cached page. */
+@keyframes fz-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fz-backdrop-in {
+  from { opacity: 0; transform: scale(1.04); }
+  to { opacity: 1; transform: none; }
+}
+/* Jellyfin's own backdrop fade: 0.8s ease-in, which crawls then snaps. Ease out instead,
+   settling from slightly zoomed in. */
+.backdropImageFadeIn {
+  animation: fz-backdrop-in 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) both !important;
+}
+.itemDetailPage .detailImageContainer .card,
+.itemDetailPage .nameContainer > *,
+.itemDetailPage .itemMiscInfo-primary > *,
+.itemDetailPage .mainDetailButtons > .detailButton:not(.hide),
+.itemDetailPage .detailVerticalSection:not(.hide),
+.itemDetailPage .collectionItems:not(.hide) {
+  animation: fz-rise 0.42s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.itemDetailPage .nameContainer > * { animation-delay: 0.05s; }
+.itemDetailPage .itemMiscInfo-primary > * { animation-delay: 0.09s; }
+.itemDetailPage .mainDetailButtons > .detailButton:not(.hide) { animation-delay: 0.12s; }
+.itemDetailPage .detailVerticalSection:not(.hide),
+.itemDetailPage .collectionItems:not(.hide) { animation-delay: 0.08s; }
+
 /* ---------- details page tags: two lines, the rest on hover (2026-11-05) ----------
    TMDB gives some films 40+ keywords (Nosferatu: 41), a block four lines tall under the
    overview (Fretzflix review). Mouse users get two lines that fade out and open fully on
@@ -687,4 +723,23 @@ html.layout-tv {
   .cardScalable {
     transition: none;
   }
+  .itemDetailPage .detailImageContainer .card,
+  .itemDetailPage .nameContainer > *,
+  .itemDetailPage .itemMiscInfo-primary > *,
+  .itemDetailPage .mainDetailButtons > .detailButton,
+  .itemDetailPage .detailVerticalSection,
+  .itemDetailPage .collectionItems {
+    animation: none !important;
+  }
+  .backdropImageFadeIn {
+    animation: backdrop-fadein 0.8s ease-out both !important;
+  }
+}
+.layout-tv .itemDetailPage .detailImageContainer .card,
+.layout-tv .itemDetailPage .nameContainer > *,
+.layout-tv .itemDetailPage .itemMiscInfo-primary > *,
+.layout-tv .itemDetailPage .mainDetailButtons > .detailButton,
+.layout-tv .itemDetailPage .detailVerticalSection,
+.layout-tv .itemDetailPage .collectionItems {
+  animation: none !important;
 }
