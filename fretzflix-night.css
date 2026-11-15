@@ -671,6 +671,172 @@ body[data-tnr-page="tv"] .tnr-topicon[data-kind="tv"] {
 .itemsContainer.vertical-wrap > .card:nth-child(36) { animation-delay: 0.525s; }
 .itemsContainer.vertical-wrap > .card:nth-child(n+37) { animation-delay: 0.54s; }
 
+/* ---------- more places that ripple in (2026-11-15) ----------
+   Same fz-rise as the item page and library grids, wherever a whole block lands at once:
+   - Home: each row's title and posters as Jellyfin fills the row (the row frames go in
+     empty first, so the frame itself isn't animated). Jellyfin-Tuned's rotating rows
+     move existing posters, so they don't replay it.
+   - Music (Jellyfin-Tuned): the page under the tabs, section by section, then albums,
+     genres and tracks in each shelf ripple. The Music page redraws only when you
+     navigate, never on playback. The tab bar is left alone (it redraws every time).
+   - TV Guide (Jellyfin's live TV): channel names and their program rows, row by row,
+     each channel's name and programs together (same nth-child in both columns).
+   Not here, on purpose: the Radio station list, the Surf TV channel list and search
+   results redraw on every tune, flip or keystroke, so an entrance would replay constantly.
+   Off for TV and reduced motion, below. */
+.homeSectionsContainer > .verticalSection > *,
+.tnm-body > *,
+.tnm-row > .tnm-card,
+.tnm-grid > .tnm-card,
+.tnm-genres > .tnm-genre,
+.tnm-songs > .tnm-song,
+.channelsContainer > .guide-channelHeaderCell,
+.programGrid .channelPrograms {
+  animation: fz-rise 0.38s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.tnm-body > *:nth-child(2) { animation-delay: 0.060s; }
+.tnm-body > *:nth-child(3) { animation-delay: 0.120s; }
+.tnm-body > *:nth-child(4) { animation-delay: 0.180s; }
+.tnm-body > *:nth-child(5) { animation-delay: 0.240s; }
+.tnm-body > *:nth-child(6) { animation-delay: 0.300s; }
+.tnm-body > *:nth-child(n+7) { animation-delay: 0.360s; }
+.tnm-row > .tnm-card:nth-child(2) { animation-delay: 0.015s; }
+.tnm-row > .tnm-card:nth-child(3) { animation-delay: 0.030s; }
+.tnm-row > .tnm-card:nth-child(4) { animation-delay: 0.045s; }
+.tnm-row > .tnm-card:nth-child(5) { animation-delay: 0.060s; }
+.tnm-row > .tnm-card:nth-child(6) { animation-delay: 0.075s; }
+.tnm-row > .tnm-card:nth-child(7) { animation-delay: 0.090s; }
+.tnm-row > .tnm-card:nth-child(8) { animation-delay: 0.105s; }
+.tnm-row > .tnm-card:nth-child(9) { animation-delay: 0.120s; }
+.tnm-row > .tnm-card:nth-child(10) { animation-delay: 0.135s; }
+.tnm-row > .tnm-card:nth-child(11) { animation-delay: 0.150s; }
+.tnm-row > .tnm-card:nth-child(12) { animation-delay: 0.165s; }
+.tnm-row > .tnm-card:nth-child(13) { animation-delay: 0.180s; }
+.tnm-row > .tnm-card:nth-child(14) { animation-delay: 0.195s; }
+.tnm-row > .tnm-card:nth-child(15) { animation-delay: 0.210s; }
+.tnm-row > .tnm-card:nth-child(16) { animation-delay: 0.225s; }
+.tnm-row > .tnm-card:nth-child(17) { animation-delay: 0.240s; }
+.tnm-row > .tnm-card:nth-child(18) { animation-delay: 0.255s; }
+.tnm-row > .tnm-card:nth-child(19) { animation-delay: 0.270s; }
+.tnm-row > .tnm-card:nth-child(20) { animation-delay: 0.285s; }
+.tnm-row > .tnm-card:nth-child(21) { animation-delay: 0.300s; }
+.tnm-row > .tnm-card:nth-child(22) { animation-delay: 0.315s; }
+.tnm-row > .tnm-card:nth-child(23) { animation-delay: 0.330s; }
+.tnm-row > .tnm-card:nth-child(24) { animation-delay: 0.345s; }
+.tnm-row > .tnm-card:nth-child(n+25) { animation-delay: 0.360s; }
+.tnm-grid > .tnm-card:nth-child(2) { animation-delay: 0.015s; }
+.tnm-grid > .tnm-card:nth-child(3) { animation-delay: 0.030s; }
+.tnm-grid > .tnm-card:nth-child(4) { animation-delay: 0.045s; }
+.tnm-grid > .tnm-card:nth-child(5) { animation-delay: 0.060s; }
+.tnm-grid > .tnm-card:nth-child(6) { animation-delay: 0.075s; }
+.tnm-grid > .tnm-card:nth-child(7) { animation-delay: 0.090s; }
+.tnm-grid > .tnm-card:nth-child(8) { animation-delay: 0.105s; }
+.tnm-grid > .tnm-card:nth-child(9) { animation-delay: 0.120s; }
+.tnm-grid > .tnm-card:nth-child(10) { animation-delay: 0.135s; }
+.tnm-grid > .tnm-card:nth-child(11) { animation-delay: 0.150s; }
+.tnm-grid > .tnm-card:nth-child(12) { animation-delay: 0.165s; }
+.tnm-grid > .tnm-card:nth-child(13) { animation-delay: 0.180s; }
+.tnm-grid > .tnm-card:nth-child(14) { animation-delay: 0.195s; }
+.tnm-grid > .tnm-card:nth-child(15) { animation-delay: 0.210s; }
+.tnm-grid > .tnm-card:nth-child(16) { animation-delay: 0.225s; }
+.tnm-grid > .tnm-card:nth-child(17) { animation-delay: 0.240s; }
+.tnm-grid > .tnm-card:nth-child(18) { animation-delay: 0.255s; }
+.tnm-grid > .tnm-card:nth-child(19) { animation-delay: 0.270s; }
+.tnm-grid > .tnm-card:nth-child(20) { animation-delay: 0.285s; }
+.tnm-grid > .tnm-card:nth-child(21) { animation-delay: 0.300s; }
+.tnm-grid > .tnm-card:nth-child(22) { animation-delay: 0.315s; }
+.tnm-grid > .tnm-card:nth-child(23) { animation-delay: 0.330s; }
+.tnm-grid > .tnm-card:nth-child(24) { animation-delay: 0.345s; }
+.tnm-grid > .tnm-card:nth-child(n+25) { animation-delay: 0.360s; }
+.tnm-genres > .tnm-genre:nth-child(2) { animation-delay: 0.015s; }
+.tnm-genres > .tnm-genre:nth-child(3) { animation-delay: 0.030s; }
+.tnm-genres > .tnm-genre:nth-child(4) { animation-delay: 0.045s; }
+.tnm-genres > .tnm-genre:nth-child(5) { animation-delay: 0.060s; }
+.tnm-genres > .tnm-genre:nth-child(6) { animation-delay: 0.075s; }
+.tnm-genres > .tnm-genre:nth-child(7) { animation-delay: 0.090s; }
+.tnm-genres > .tnm-genre:nth-child(8) { animation-delay: 0.105s; }
+.tnm-genres > .tnm-genre:nth-child(9) { animation-delay: 0.120s; }
+.tnm-genres > .tnm-genre:nth-child(10) { animation-delay: 0.135s; }
+.tnm-genres > .tnm-genre:nth-child(11) { animation-delay: 0.150s; }
+.tnm-genres > .tnm-genre:nth-child(12) { animation-delay: 0.165s; }
+.tnm-genres > .tnm-genre:nth-child(13) { animation-delay: 0.180s; }
+.tnm-genres > .tnm-genre:nth-child(14) { animation-delay: 0.195s; }
+.tnm-genres > .tnm-genre:nth-child(15) { animation-delay: 0.210s; }
+.tnm-genres > .tnm-genre:nth-child(16) { animation-delay: 0.225s; }
+.tnm-genres > .tnm-genre:nth-child(17) { animation-delay: 0.240s; }
+.tnm-genres > .tnm-genre:nth-child(18) { animation-delay: 0.255s; }
+.tnm-genres > .tnm-genre:nth-child(19) { animation-delay: 0.270s; }
+.tnm-genres > .tnm-genre:nth-child(20) { animation-delay: 0.285s; }
+.tnm-genres > .tnm-genre:nth-child(21) { animation-delay: 0.300s; }
+.tnm-genres > .tnm-genre:nth-child(22) { animation-delay: 0.315s; }
+.tnm-genres > .tnm-genre:nth-child(23) { animation-delay: 0.330s; }
+.tnm-genres > .tnm-genre:nth-child(24) { animation-delay: 0.345s; }
+.tnm-genres > .tnm-genre:nth-child(n+25) { animation-delay: 0.360s; }
+.tnm-songs > .tnm-song:nth-child(2) { animation-delay: 0.015s; }
+.tnm-songs > .tnm-song:nth-child(3) { animation-delay: 0.030s; }
+.tnm-songs > .tnm-song:nth-child(4) { animation-delay: 0.045s; }
+.tnm-songs > .tnm-song:nth-child(5) { animation-delay: 0.060s; }
+.tnm-songs > .tnm-song:nth-child(6) { animation-delay: 0.075s; }
+.tnm-songs > .tnm-song:nth-child(7) { animation-delay: 0.090s; }
+.tnm-songs > .tnm-song:nth-child(8) { animation-delay: 0.105s; }
+.tnm-songs > .tnm-song:nth-child(9) { animation-delay: 0.120s; }
+.tnm-songs > .tnm-song:nth-child(10) { animation-delay: 0.135s; }
+.tnm-songs > .tnm-song:nth-child(11) { animation-delay: 0.150s; }
+.tnm-songs > .tnm-song:nth-child(12) { animation-delay: 0.165s; }
+.tnm-songs > .tnm-song:nth-child(13) { animation-delay: 0.180s; }
+.tnm-songs > .tnm-song:nth-child(14) { animation-delay: 0.195s; }
+.tnm-songs > .tnm-song:nth-child(15) { animation-delay: 0.210s; }
+.tnm-songs > .tnm-song:nth-child(16) { animation-delay: 0.225s; }
+.tnm-songs > .tnm-song:nth-child(17) { animation-delay: 0.240s; }
+.tnm-songs > .tnm-song:nth-child(18) { animation-delay: 0.255s; }
+.tnm-songs > .tnm-song:nth-child(19) { animation-delay: 0.270s; }
+.tnm-songs > .tnm-song:nth-child(20) { animation-delay: 0.285s; }
+.tnm-songs > .tnm-song:nth-child(21) { animation-delay: 0.300s; }
+.tnm-songs > .tnm-song:nth-child(22) { animation-delay: 0.315s; }
+.tnm-songs > .tnm-song:nth-child(23) { animation-delay: 0.330s; }
+.tnm-songs > .tnm-song:nth-child(24) { animation-delay: 0.345s; }
+.tnm-songs > .tnm-song:nth-child(n+25) { animation-delay: 0.360s; }
+.channelsContainer > .guide-channelHeaderCell:nth-child(2) { animation-delay: 0.020s; }
+.channelsContainer > .guide-channelHeaderCell:nth-child(3) { animation-delay: 0.040s; }
+.channelsContainer > .guide-channelHeaderCell:nth-child(4) { animation-delay: 0.060s; }
+.channelsContainer > .guide-channelHeaderCell:nth-child(5) { animation-delay: 0.080s; }
+.channelsContainer > .guide-channelHeaderCell:nth-child(6) { animation-delay: 0.100s; }
+.channelsContainer > .guide-channelHeaderCell:nth-child(7) { animation-delay: 0.120s; }
+.channelsContainer > .guide-channelHeaderCell:nth-child(8) { animation-delay: 0.140s; }
+.channelsContainer > .guide-channelHeaderCell:nth-child(9) { animation-delay: 0.160s; }
+.channelsContainer > .guide-channelHeaderCell:nth-child(10) { animation-delay: 0.180s; }
+.channelsContainer > .guide-channelHeaderCell:nth-child(11) { animation-delay: 0.200s; }
+.channelsContainer > .guide-channelHeaderCell:nth-child(12) { animation-delay: 0.220s; }
+.channelsContainer > .guide-channelHeaderCell:nth-child(13) { animation-delay: 0.240s; }
+.channelsContainer > .guide-channelHeaderCell:nth-child(14) { animation-delay: 0.260s; }
+.channelsContainer > .guide-channelHeaderCell:nth-child(15) { animation-delay: 0.280s; }
+.channelsContainer > .guide-channelHeaderCell:nth-child(16) { animation-delay: 0.300s; }
+.channelsContainer > .guide-channelHeaderCell:nth-child(17) { animation-delay: 0.320s; }
+.channelsContainer > .guide-channelHeaderCell:nth-child(18) { animation-delay: 0.340s; }
+.channelsContainer > .guide-channelHeaderCell:nth-child(19) { animation-delay: 0.360s; }
+.channelsContainer > .guide-channelHeaderCell:nth-child(20) { animation-delay: 0.380s; }
+.channelsContainer > .guide-channelHeaderCell:nth-child(n+21) { animation-delay: 0.400s; }
+.programGrid .channelPrograms:nth-child(2) { animation-delay: 0.020s; }
+.programGrid .channelPrograms:nth-child(3) { animation-delay: 0.040s; }
+.programGrid .channelPrograms:nth-child(4) { animation-delay: 0.060s; }
+.programGrid .channelPrograms:nth-child(5) { animation-delay: 0.080s; }
+.programGrid .channelPrograms:nth-child(6) { animation-delay: 0.100s; }
+.programGrid .channelPrograms:nth-child(7) { animation-delay: 0.120s; }
+.programGrid .channelPrograms:nth-child(8) { animation-delay: 0.140s; }
+.programGrid .channelPrograms:nth-child(9) { animation-delay: 0.160s; }
+.programGrid .channelPrograms:nth-child(10) { animation-delay: 0.180s; }
+.programGrid .channelPrograms:nth-child(11) { animation-delay: 0.200s; }
+.programGrid .channelPrograms:nth-child(12) { animation-delay: 0.220s; }
+.programGrid .channelPrograms:nth-child(13) { animation-delay: 0.240s; }
+.programGrid .channelPrograms:nth-child(14) { animation-delay: 0.260s; }
+.programGrid .channelPrograms:nth-child(15) { animation-delay: 0.280s; }
+.programGrid .channelPrograms:nth-child(16) { animation-delay: 0.300s; }
+.programGrid .channelPrograms:nth-child(17) { animation-delay: 0.320s; }
+.programGrid .channelPrograms:nth-child(18) { animation-delay: 0.340s; }
+.programGrid .channelPrograms:nth-child(19) { animation-delay: 0.360s; }
+.programGrid .channelPrograms:nth-child(20) { animation-delay: 0.380s; }
+.programGrid .channelPrograms:nth-child(n+21) { animation-delay: 0.400s; }
+
 /* ---------- details page tags: two lines, the rest on hover (2026-11-05) ----------
    TMDB gives some films 40+ keywords (Nosferatu: 41), a block four lines tall under the
    overview (Fretzflix review). Mouse users get two lines that fade out and open fully on
@@ -776,6 +942,14 @@ html.layout-tv {
   .itemDetailPage .mainDetailButtons > .detailButton,
   .itemDetailPage .detailVerticalSection,
   .itemDetailPage .collectionItems,
+  .homeSectionsContainer > .verticalSection > *,
+  .tnm-body > *,
+  .tnm-row > .tnm-card,
+  .tnm-grid > .tnm-card,
+  .tnm-genres > .tnm-genre,
+  .tnm-songs > .tnm-song,
+  .channelsContainer > .guide-channelHeaderCell,
+  .programGrid .channelPrograms,
   .itemsContainer.vertical-wrap > .card {
     animation: none !important;
   }
@@ -789,6 +963,14 @@ html.layout-tv {
 .layout-tv .itemDetailPage .mainDetailButtons > .detailButton,
 .layout-tv .itemDetailPage .detailVerticalSection,
 .layout-tv .itemDetailPage .collectionItems,
+.layout-tv .homeSectionsContainer > .verticalSection > *,
+.layout-tv .tnm-body > *,
+.layout-tv .tnm-row > .tnm-card,
+.layout-tv .tnm-grid > .tnm-card,
+.layout-tv .tnm-genres > .tnm-genre,
+.layout-tv .tnm-songs > .tnm-song,
+.layout-tv .channelsContainer > .guide-channelHeaderCell,
+.layout-tv .programGrid .channelPrograms,
 .layout-tv .itemsContainer.vertical-wrap > .card {
   animation: none !important;
 }
