@@ -177,6 +177,11 @@ html.tnr-gliding .skinHeader.skinHeader-withBackground {
   .cardPadder::after { animation: none; opacity: 0; }
 }
 .layout-tv .cardPadder::after { display: none; }
+/* Posters with no picture at all (Jellyfin draws a coloured box + icon) never get
+   .lazy-hidden-children, so their sheen ran forever: ~180 endless animations on a big
+   home page (review 2026-11-15). Their image container is .defaultCardBackground, not
+   .lazy. Own rule: :has() is unknown to Chromium 83, which drops just this one. */
+.cardPadder:has(~ .defaultCardBackground)::after { display: none; }
 
 .cardScalable {
   /* resting rim: barely-there purple edge, like the glass cards in the reference */
@@ -202,9 +207,16 @@ html.tnr-gliding .skinHeader.skinHeader-withBackground {
 .card:has(:focus-visible) .cardScalable {
   box-shadow: 0 0 0 3px var(--fz-violet-hi), 0 12px 34px -10px rgb(100 64 235 / 0.6);
 }
-.card:focus-visible,
-.card :focus-visible {
+/* Only the card itself: the ring above already marks it. The buttons inside it (Play,
+   played, favourite, more) keep a ring of their own, or keyboard users can't tell which
+   one has focus (review 2026-11-15). */
+.card:focus-visible {
   outline: none;
+}
+.cardOverlayButton:focus-visible {
+  outline: 2px solid var(--fz-violet-hi);
+  outline-offset: 1px;
+  border-radius: 50%;
 }
 .emby-button:focus-visible,
 .paper-icon-button-light:focus-visible,
@@ -221,6 +233,8 @@ html.tnr-gliding .skinHeader.skinHeader-withBackground {
 }
 .cardText-first {
   font-weight: 600;
+  /* brighter than the year/subtitle lines under it, so the title leads (review 2026-11-15) */
+  color: rgb(255 255 255 / 0.93);
 }
 /* Play on a poster: a small round button in the bottom-left corner, not a big one in the
    middle (2026-11-05). WHY: stock Jellyfin centres a ~58 px Play button on hover, so a
@@ -301,6 +315,27 @@ html.tnr-gliding .skinHeader.skinHeader-withBackground {
   box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.14) !important;
 }
 
+/* Poster badges: resolution only until you point at the poster (review 2026-11-15).
+   Both reviewers' top complaint: up to four quality pills + genre icons + language flags
+   covered ~40% of a poster, and in Continue Watching they sat on the title art. JE marks
+   the resolution chip .resolution; source, HDR, codec and audio chips, genre icons and
+   flags fade in on hover or keyboard/remote focus. visibility, not display: JE sets
+   display with !important on its own containers. Touch screens can't hover, so they
+   keep everything (hover: hover is false there). */
+@media (hover: hover) {
+  .card .quality-overlay-container .quality-overlay-label:not(.resolution),
+  .card .genre-overlay-container,
+  .card .language-overlay-container {
+    transition: opacity 0.18s ease, visibility 0.18s;
+  }
+  .card:not(:hover):not(:focus-within) .quality-overlay-container .quality-overlay-label:not(.resolution),
+  .card:not(:hover):not(:focus-within) .genre-overlay-container,
+  .card:not(:hover):not(:focus-within) .language-overlay-container {
+    opacity: 0 !important;
+    visibility: hidden !important;
+  }
+}
+
 /* ---------- section titles ---------- */
 .sectionTitle,
 .sectionTitle-cards {
@@ -320,6 +355,15 @@ html.tnr-gliding .skinHeader.skinHeader-withBackground {
 .tnr-more-menu,
 .formDialogContent {
   background: var(--fz-glass-strong) !important;
+}
+/* Small menus (user menu, ...) sit right on top of poster text, which showed through the
+   0.82 glass and fought the menu items (review 2026-11-15). Nearly solid; the blur
+   stays for the edge glow. */
+.actionSheet,
+.MuiMenu-paper,
+.MuiPopover-paper,
+.tnr-more-menu {
+  background: rgb(14 11 30 / 0.94) !important;
 }
 /* Glass blur on the outer panels only. Not on .formDialogContent: a backdrop-filter makes
    its box the anchor for absolutely placed children, and some dialogs (the desktop app's
@@ -426,6 +470,32 @@ html.tnr-gliding .skinHeader.skinHeader-withBackground {
 .detailButton:hover .detailButton-content,
 .detailButton:focus .detailButton-content {
   background: rgb(var(--fz-violet-rgb) / 0.25) !important;
+}
+/* Item page Play/Resume: one big labelled violet pill, not a bare triangle in a row of
+   same-size grey icons (both reviewers, 2026-11-15). The label is the button's own
+   title, which Jellyfin sets to "Play" or "Resume" (translated) for each item, so the
+   pill always says the right one. */
+.mainDetailButtons .btnPlay.detailButton {
+  flex-direction: row;
+  padding: 0.5em 1.35em 0.5em 0.95em !important;
+  margin-right: 0.6em !important;
+  border-radius: 999px;
+  color: #fff !important;
+  background: linear-gradient(135deg, var(--fz-violet-hi), var(--fz-violet-deep));
+  box-shadow: 0 6px 22px -6px rgb(110 70 255 / 0.8), inset 0 1px 0 rgb(255 255 255 / 0.25);
+}
+.mainDetailButtons .btnPlay.detailButton::after {
+  content: attr(title);
+  margin-left: 0.3em; /* not flex gap: the desktop app's Chromium 83 predates it */
+  font-size: 1.05em;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.mainDetailButtons .btnPlay.detailButton .detailButton-content {
+  background: none !important;
+}
+.mainDetailButtons .btnPlay.detailButton:hover {
+  filter: brightness(1.12);
 }
 
 /* Play All / Shuffle (MUI contained buttons): same soft purple pill as the "1-100 of N"
@@ -606,9 +676,9 @@ body[data-tnr-page="tv"] .tnr-topicon[data-kind="tv"] {
   to { opacity: 1; transform: none; }
 }
 /* Jellyfin's own backdrop fade: 0.8s ease-in, which crawls then snaps. Ease out instead,
-   settling from slightly zoomed in. */
+   settling from slightly zoomed in. 0.7s: 1.1s felt slow to the reviewers (2026-11-15). */
 .backdropImageFadeIn {
-  animation: fz-backdrop-in 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) both !important;
+  animation: fz-backdrop-in 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both !important;
 }
 .itemDetailPage .detailImageContainer .card,
 .itemDetailPage .nameContainer > *,
@@ -862,19 +932,23 @@ body[data-tnr-page="tv"] .tnr-topicon[data-kind="tv"] {
    TMDB gives some films 40+ keywords (Nosferatu: 41), a block four lines tall under the
    overview (Fretzflix review). Mouse users get two lines that fade out and open fully on
    hover or keyboard focus. Touch screens can't hover, so they keep the full list
-   (hover: hover is false there). */
+   (hover: hover is false there).
+   Two WHOLE lines ending in "...": a fixed max-height with a fade cut the second line
+   through the middle, which looked like a rendering bug (review 2026-11-15). The tags
+   are plain inline text + links, so line-clamp works on the box itself. */
 @media (hover: hover) {
-  .itemTags {
-    max-height: 3.4em;
+  .itemTags:not(.hide) {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
     overflow: hidden;
-    -webkit-mask-image: linear-gradient(180deg, #000 45%, transparent);
-    mask-image: linear-gradient(180deg, #000 45%, transparent);
   }
-  .itemTags:hover,
-  .itemTags:focus-within {
-    max-height: none;
-    -webkit-mask-image: none;
-    mask-image: none;
+  .itemTags:not(.hide):hover,
+  .itemTags:not(.hide):focus-within {
+    display: block;
+    -webkit-line-clamp: unset;
+    line-clamp: none;
   }
 }
 
