@@ -16,6 +16,8 @@ One CSS file. No fonts or anything else loaded from outside your server.
 
 To remove it, clear the box and save.
 
+**On TVs** (Jellyfin's TV display mode, the Samsung and LG apps) the theme turns off its blur and soft shadows, which cost frames on TV hardware, and uses more solid panels instead.
+
 **Works in** web-based clients: browsers, Jellyfin Media Player (including its older engine), and the official phone, Samsung and LG apps. Native Android TV, Roku and Apple TV apps ignore custom CSS.
 
 ## Changing the colors
@@ -26,7 +28,7 @@ Edit the variables at the top of the file: `--fz-violet`, `--fz-violet-hi`, `--f
 
 - The newer parts of Jellyfin (top bar, menus) use its palette variables, so they follow the theme automatically.
 - The older parts (cards, sliders, the player) hard-code Jellyfin's blue, `#00a4dc`, so the theme overrides them one by one.
-- If blue spots come back, search the loaded stylesheets for `00a4dc` and add the new selectors, or open an issue with a screenshot.
+- If blue spots come back, search jellyfin-web's stylesheets for `00a4dc` (last done on 12.4.0) and add the new selectors, or open an issue with a screenshot.
 
 ## License
 
